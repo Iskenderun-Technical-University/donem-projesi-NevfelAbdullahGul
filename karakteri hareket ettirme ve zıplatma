@@ -1,0 +1,61 @@
+using UnityEngine;
+
+public class CharacterMovement : MonoBehaviour { public float speed = 5f; // Karakterin hızı public float turnSpeed = 10f; // Karakterin dönüş hızı public float jumpForce = 10f; // Karakterin zıplama kuvveti
+
+private Transform cameraTransform; // Kameranın transform component'i
+private Vector3 movement; // Karakterin hareket vektörü
+private Rigidbody rb; // Karakterin rigidbody component'i
+private bool isGrounded; // Karakterin zeminde olup olmadığını belirten bool değişkeni
+
+void Start()
+{
+    cameraTransform = Camera.main.transform; // Kamerayı bul
+    rb = GetComponent<Rigidbody>(); // Rigidbody component'ini al
+    isGrounded = true; // Başlangıçta karakter zemindedir
+}
+
+void Update()
+{
+    // Klavyeden alınan girdileri kullanarak hareket vektörünü hesapla
+    float horizontal = 0f; // Yatay girdi
+    float vertical = 0f; // Dikey girdi
+    if (Input.GetKey(KeyCode.A)) // A tuşuna basılıysa
+    {
+        vertical = -1f; // Geriye git
+    }
+    else if (Input.GetKey(KeyCode.D)) // D tuşuna basılıysa
+    {
+        vertical = 1f; // İleriye git
+    }
+    movement = new Vector3(horizontal, 0f, vertical); // Hareket vektörü
+
+    // Hareket vektörüne göre karakterin pozisyonunu güncelle
+    transform.position += movement * speed * Time.deltaTime;
+
+    // Hareket vektörüne göre karakterin yönünü güncelle
+    if (movement != Vector3.zero) // Hareket ediyorsa
+    {
+        // Kameranın yönünü dikkate alarak hedef rotasyonu hesapla
+        Quaternion targetRotation = Quaternion.LookRotation(movement, Vector3.up);
+        targetRotation *= Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
+
+        // Hedef rotasyona doğru yavaşça dön
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+    }
+
+    // Boşluk tuşuna basıldığında ve karakter zemindeyse zıpla
+    if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+    {
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); // Yukarı doğru bir kuvvet uygula
+        isGrounded = false; // Zeminde olmadığını belirt
+    }
+}
+
+void OnCollisionEnter(Collision collision)
+{
+    // Zemine temas ettiğinde zeminde olduğunu belirt
+    if (collision.gameObject.CompareTag("Ground"))
+    {
+        isGrounded = true;
+    }
+}
