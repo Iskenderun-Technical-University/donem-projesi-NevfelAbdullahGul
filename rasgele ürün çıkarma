@@ -1,0 +1,33 @@
+using UnityEngine;
+
+public class RandomNebula : MonoBehaviour
+{
+    // Nebula nesnesinin prefabı
+    public GameObject nebulaPrefab;
+
+    // Oluşturulacak nebula sayısı
+    public int nebulaCount = 10;
+
+    // Oluşturma alanının aralığı
+    public float spawnRange = 10f;
+
+    // İlk kare güncellemesinden önce Start çağrılır
+    void Start()
+    {
+        // Nebula sayısı kadar döngü yap
+        for (int i = 0; i < nebulaCount; i++)
+        {
+            // Oluşturma aralığı içinde rasgele bir pozisyon üret
+            Vector3 position = new Vector3(
+                Random.Range(-spawnRange, spawnRange),
+                Random.Range(-spawnRange, spawnRange),
+                Random.Range(-spawnRange, spawnRange)
+            );
+
+            // Rasgele pozisyonda yeni bir nebula oluştur
+            GameObject nebula = Instantiate(nebulaPrefab, position, Quaternion.identity);
+
+            // İsteğe bağlı olarak, burada nebula'nın ölçeğini, dönüşünü ve rengini rasgele yapabilirsiniz
+        }
+    }
+}
