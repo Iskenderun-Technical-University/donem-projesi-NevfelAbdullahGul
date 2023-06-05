@@ -1,0 +1,55 @@
+using UnityEngine;
+using System.Collections;
+
+public class NumberWizard : MonoBehaviour {
+
+	int min;
+	int max;
+	int guess;
+	int counter;
+
+	// Use this for initialization
+	void Start () {
+		StartGame ();
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			print ("yukarı dediniz.");
+			min = guess;
+			NextGuess();
+		} else if (Input.GetKeyDown (KeyCode.DownArrow)) {
+			print ("aşağı dediniz.");
+			max = guess;
+			NextGuess();
+		} else if (Input.GetKeyDown (KeyCode.Return)) {
+			print ("kazandınız...yeni oyun başlatılıyor.");
+			print ("===============================");
+
+			StartGame();
+		}
+	}
+
+	void StartGame()
+	{
+		min = 1;
+		max = 1000;
+		guess = 0;
+		counter = 0;
+
+		print ("sayı sihirbazına hoş geldin !");
+		print ("şimdi bir sayı tahmin et. fakat bana söyleme !");
+		print (string.Format("seçebileceğin sayılar {0} ile {1} arasında olmalıdır.", min, max));
+
+		max++;
+		NextGuess ();
+	}
+
+	void NextGuess()
+	{
+		counter++;
+		guess = (max + min) / 2;
+		print (string.Format("#tahmin {0}. girdiğiniz değer {1} den yüksek mi yoksa alçak mı ?", counter, guess));
+	}
+}
